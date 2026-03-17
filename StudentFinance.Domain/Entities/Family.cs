@@ -11,7 +11,7 @@ namespace StudentFinance.Domain.Entities
         public Country Country { get; set; }
 
         // Base currency for the family
-        public string BaseCurrency { get; set; } = string.Empty;
+        public Currency BaseCurrency { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
