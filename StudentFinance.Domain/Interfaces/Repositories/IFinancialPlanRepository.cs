@@ -5,9 +5,9 @@ namespace StudentFinance.Domain.Interfaces.Repositories
     public interface IFinancialPlanRepository : IGenericRepository<FinancialPlan>
     {
         // Get all financial plans for a specific student
-        Task<IEnumerable<FinancialPlan>> GetPlansByStudentIdAsync(Guid studentId);
+        Task<IEnumerable<FinancialPlan>> GetPlansByStudentIdAsync(Guid studentId, CancellationToken cancellationToken);
 
         // Get the active financial plan for a student (the one that is currently in effect based on the current date)
-        Task<FinancialPlan?> GetActivePlanAsync(Guid studentId, DateTime currentDate);
+        Task<FinancialPlan?> GetActivePlanAsync(Guid studentId, DateTime currentDate, CancellationToken cancellationToken);
     }
 }

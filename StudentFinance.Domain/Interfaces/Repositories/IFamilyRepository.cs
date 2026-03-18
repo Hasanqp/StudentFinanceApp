@@ -4,6 +4,6 @@ namespace StudentFinance.Domain.Interfaces.Repositories
 {
     public interface IFamilyRepository : IGenericRepository<Family>
     {
-        Task<Family?> GetFamilyWithMembersAsync(Guid familyId);
+        Task<Family?> GetFamilyWithMembersAsync(Guid familyId, CancellationToken cancellationToken);
     }
 }
