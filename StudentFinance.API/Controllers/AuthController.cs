@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StudentFinance.Application.Interfaces.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudentFinance.Application.DTOs.Auth;
+using StudentFinance.Application.Interfaces.Services;
 
 namespace StudentFinance.API.Controllers
 {
@@ -25,6 +26,7 @@ namespace StudentFinance.API.Controllers
             return Created("", new { message = "User registered successfully." });
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
