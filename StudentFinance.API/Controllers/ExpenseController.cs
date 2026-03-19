@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StudentFinance.Application.DTOs;
 using StudentFinance.Application.Interfaces.Services;
+using System.Security.Claims;
 
 namespace StudentFinance.API.Controllers
 {
@@ -23,12 +24,12 @@ namespace StudentFinance.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var familyId = User.FindFirst("familyId")?.Value;
+            var studentIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (familyId == null)
+            if (studentIdClaim == null)
                 return Unauthorized();
 
-            var studentId = Guid.Parse(familyId);
+            var studentId = Guid.Parse(studentIdClaim);
 
             var result = await _expenseService.CreateExpenseAsync(
                 studentId,
