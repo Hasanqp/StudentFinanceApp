@@ -47,10 +47,19 @@ namespace StudentFinance.API.Controllers
             );
         }
 
-        [HttpGet("student/{studentId}/monthly")]
-        public async Task<IActionResult> GetMonthlyExpenses(Guid studentId, [FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
+        [HttpGet("monthly")]
+        public async Task<IActionResult> GetMonthlyExpenses([FromQuery] int month, [FromQuery] int year, CancellationToken cancellationToken)
         {
-            var result = await _expenseService.GetStudentMonthlyExpensesAsync(studentId, month, year, cancellationToken);
+            var studentIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (studentIdClaim == null)
+                return Unauthorized();
+
+            var studentId = Guid.Parse(studentIdClaim);
+
+            var result = await _expenseService
+                .GetStudentMonthlyExpensesAsync(studentId, month, year, cancellationToken);
+
             return Ok(result);
         }
     }

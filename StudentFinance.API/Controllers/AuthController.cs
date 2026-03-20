@@ -19,11 +19,11 @@ namespace StudentFinance.API.Controllers
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
-        {
-            var result = await _authService.RegisterAsync(request, cancellationToken);
-            
+        {            
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var result = await _authService.RegisterAsync(request, cancellationToken);
 
             if (result.ErrorMessage != null)
                 return BadRequest(new { message = result.ErrorMessage });

@@ -20,7 +20,7 @@ namespace StudentFinance.Application.Services
             var family = await _unitOfWork.Families.GetFamilyWithMembersAsync(familyId, cancellationToken);
 
             if (family == null)
-                return null;
+                throw new NotFoundException("Family not found");
 
             // 2. Calculate current month expenses
             var now = DateTime.UtcNow;

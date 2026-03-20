@@ -28,9 +28,6 @@ namespace StudentFinance.API.Controllers
         {
             var summary = await _familyService.GetFamilySummaryAsync(familyId, cancellationToken);
 
-            if (summary == null)
-                return NotFound(new { message = "Family not found." });
-
             return Ok(summary);
         }
 

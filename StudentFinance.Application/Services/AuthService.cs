@@ -23,6 +23,9 @@ namespace StudentFinance.Application.Services
             _unitOfWork = unitOfWork;
             _jwtSettings = jwtOptions.Value;
             _logger = logger;
+
+            if (string.IsNullOrWhiteSpace(_jwtSettings.Secret))
+                throw new InvalidOperationException("JWT Secret is not configured");
         }
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken)
@@ -105,6 +108,7 @@ namespace StudentFinance.Application.Services
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
 
             var claims = new List<Claim>
             {

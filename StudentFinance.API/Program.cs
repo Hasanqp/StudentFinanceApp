@@ -30,6 +30,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFamilyService, FamilyService>();
 builder.Services.AddScoped<IProjectedExpensesService, ProjectedExpensesService>();
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
+builder.Services.AddScoped<ICurrencyExchangeService, CurrencyExchangeService>();
 
 // Authentication (JWT)
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

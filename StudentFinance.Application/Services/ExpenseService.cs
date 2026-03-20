@@ -1,4 +1,5 @@
-﻿using StudentFinance.Application.DTOs;
+﻿using Microsoft.Extensions.Logging;
+using StudentFinance.Application.DTOs;
 using StudentFinance.Application.Exceptions;
 using StudentFinance.Application.Interfaces.Services;
 using StudentFinance.Domain.Entities;
@@ -11,11 +12,13 @@ namespace StudentFinance.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrencyExchangeService _currencyService;
-        
-        public ExpenseService(IUnitOfWork unitOfWork, ICurrencyExchangeService currencyService)
+        private readonly ILogger<ExpenseService> _logger;
+
+        public ExpenseService(IUnitOfWork unitOfWork, ICurrencyExchangeService currencyService, ILogger<ExpenseService> logger)
         {
             _unitOfWork = unitOfWork;
             _currencyService = currencyService;
+            _logger = logger;
         }
 
         public async Task<ExpenseResponse> CreateExpenseAsync(Guid studentId, decimal localAmount, Currency localCurrency, ExpenseCategory category, string note, CancellationToken cancellationToken)
@@ -24,7 +27,10 @@ namespace StudentFinance.Application.Services
             var student = await _unitOfWork.Users.GetByIdAsync(studentId, cancellationToken);
 
             if (student == null)
+            {
+                _logger.LogWarning("Student not found: {StudentId}", studentId);
                 throw new NotFoundException("Student not found");
+            }
 
             if (student.FamilyId == null)
                 throw new NotFoundException("Student is not assigned to a family");
@@ -39,7 +45,7 @@ namespace StudentFinance.Application.Services
             // 3. Get exchange rate
             var appliedExchangeRate = await _currencyService.GetExchangeRateAsync(
                 localCurrency, family.BaseCurrency, cancellationToken);
-
+            
             // 4. Create entity
             var expense = new Expense
             {
@@ -59,6 +65,13 @@ namespace StudentFinance.Application.Services
             // 5. Saving to the database via UnitOfWork
             await _unitOfWork.Expenses.AddAsync(expense, cancellationToken);
             await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation(
+                "Expense created: UserId={UserId}, Amount={Amount}, Currency={Currency}",
+                studentId,
+                localAmount,
+                localCurrency
+            );
 
             // 6. Map to DTO
             return new ExpenseResponse
@@ -87,7 +100,10 @@ namespace StudentFinance.Application.Services
             var student = await _unitOfWork.Users.GetByIdAsync(studentId, cancellationToken);
 
             if (student == null)
+            {
+                _logger.LogWarning("Student not found: {StudentId}", studentId);
                 throw new NotFoundException("Student not found");
+            }
 
             // 2. Get expenses from repository
             var expenses = await _unitOfWork.Expenses

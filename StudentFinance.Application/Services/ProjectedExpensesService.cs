@@ -25,7 +25,7 @@ namespace StudentFinance.Application.Services
 
             // 2. Obtain an effective financial plan (if available) to estimate fixed monthly expenses
             // (This logic can be extended later to calculate the average of the last 3 months instead of the plan)
-            decimal expectedMonthlyAllowance = 0;
+            decimal expectedMonthlyAllowance = 0; // TODO: Replace with actual financial planning logic
 
             // 3. Returning the expected cost (liabilities + expected expense)
             return projectedObligations + expectedMonthlyAllowance;
